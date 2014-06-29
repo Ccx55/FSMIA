@@ -1,0 +1,9 @@
+beta0 = [0.9,3e-4,3e-2];
+lb = [0 1e-5 1e-4];
+ub = [1 1e-3 1];
+opt = optimset('Display','off');
+[beta,resnorm,residual,exitflag,output,lambda,jacobian] = ...
+    lsqcurvefit(@csdd,beta0,X,y,lb,ub,opt);
+
+yhat = csdd(beta,X);
+semilogy(X,y,X,yhat)

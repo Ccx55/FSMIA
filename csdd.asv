@@ -1,0 +1,31 @@
+function yhat = csdd(beta,x)
+%CSDD Cumulated squared-displacement distribution.
+%   YHAT = csdd(BETA,X) gives the predicted values of the c.d.f., YHAT, as
+%   a function of the vector of parameters, BETA, and the vector of data,
+%   X. Number of BETA elements depends on the number of population.
+
+% %%%%%%%%%%
+% % one exponential
+% 
+% D_1 = beta(1);
+% 
+% % model
+% yhat = exp(-x/D_1);
+
+%%%%%%%%%%
+% two exponentials
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% three exponential
+
+f_1 = beta(1);
+f_2 = beta(2);
+f_3 = 1 - beta(1) - beta(2); % sum of fraction must be 1
+D_1 = beta(3);
+D_2 = beta(4);
+D_3 = beta(5);
+
+model
+yhat = f_1*exp(-x/D_1) + f_2*exp(-x/D_2) + f_3*exp(-x/D_3);
