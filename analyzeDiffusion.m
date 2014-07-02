@@ -3,6 +3,8 @@ function result = analyzeDiffusion(trajall,Molecule,Option,traj_ind)
 % Input
 %   trajall - trajectory results from previous image analysis
 %   traj_ind - index of trajectory
+% Outpu
+%   result - a vector of step sizes (nm)
 % $Revision: 2.0 $  $Date: 2014/06/29 $
 
 traj = trajall(traj_ind).trajectory;

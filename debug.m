@@ -1,40 +1,57 @@
-newTraj = struct('trajectory',[]);
-ind_newtraj = 1;
-% connect short trajectories into a single long trajectory
-for i = 1:(imSize^2)
-    if trajStat(i).n == 0
-        continue
+image_file = '~/Documents/Research/20140701/2014-04-02_BSA_flowcell_2_Pluronic_RT_exp200ms_l10_EM200_2_cut.tif';
+trajall = Result.Trajectory;
+traj_ind = 648;
+
+traj = trajall(traj_ind).trajectory;
+frame_appear = Molecule(traj(1)).frame;
+frame_disappear = Molecule(traj(end)).frame;
+info = imfinfo(image_file);
+n_images = numel(info);
+[pathstr,~,~] = fileparts(image_file);
+
+for i = 1:9
+    im = imread(image_file,i);
+    RGB = repmat(im,[1,1,3]);
+    % normalize data to dynamic range [0,1]
+    RGB = double(RGB)/16384;
+    if i == 1
+        ofile_name = fullfile(pathstr,(strcat('Trajectory_',num2str(traj_ind),...
+            '.tiff')));
+        imwrite(RGB,ofile_name);
+    else
+        ofile_name = fullfile(pathstr,(strcat('Trajectory_',num2str(traj_ind),...
+            '.tiff')));
+        imwrite(RGB,ofile_name,'WriteMode','append');
     end
-    molInd = cell(1);
-    for k = 1:trajStat(i).n
-        molInd{k} = str2num(trajStat(i).traj{k});
-    end
-    % avoid duplicate counting
-    trajStat(i).n = 0;
-    
-    for j = (i+1):(imSize^2)
-        if trajStat(j).n ~=0 && isneighbor(trajStat(i),trajStat(j))
-           fprintf('%d\n',j);
-           for k = 1:trajStat(j).n
-               molInd{length(molInd)+1} = str2num(trajStat(j).traj{k});
-           end
-           trajStat(j).n = 0;
-        end
-    end
-    n_traj = length(molInd);
-    first_mol_ind = zeros(1,n_traj);
-    for k = 1:n_traj
-        first_mol_ind(k) = molInd{k}(1);
-    end
-    [~,ind_sort] = sort(first_mol_ind);
-    molInd = molInd(ind_sort);
-    traj_complete = molInd{1};
-    for k = 2:n_traj
-        end_mol_ind = traj_complete(end);
-        start_mol_ind = molInd{k}(1);
-        n_gap = Molecule(start_mol_ind).frame - Molecule(end_mol_ind).frame - 1;
-        traj_complete = [traj_complete,NaN(1,n_gap),molInd{k}];
-    end
-    newTraj(ind_newtraj).trajectory = traj_complete;
-    ind_newtraj = ind_newtraj + 1;
+end
+
+j = 1;
+
+for i = frame_appear:frame_disappear
+    im = imread(image_file,i);
+    % locate 'point'
+    pt = Molecule(traj(j)).coordinate(1:2);
+    pt = int32(pt);
+    marker_intensity = round(max(im(:)));   %%%%%%
+    RGB = repmat(im,[1,1,3]);   %%%%%%%
+    RGB(pt(1)-2:pt(1)+2,pt(2),1) = 0;
+    RGB(pt(1)-2:pt(1)+2,pt(2),2) = marker_intensity;
+    RGB(pt(1)-2:pt(1)+2,pt(2),3) = 0;
+    RGB(pt(1),pt(2)-2:pt(2)+2,1) = 0;
+    RGB(pt(1),pt(2)-2:pt(2)+2,2) = marker_intensity;
+    RGB(pt(1),pt(2)-2:pt(2)+2,3) = 0;
+    RGB = double(RGB)/16384;
+    ofile_name = fullfile(pathstr,(strcat('Trajectory_',num2str(traj_ind),...
+            '_',num2str(i),'.tiff')));
+    imwrite(RGB,ofile_name);
+    j = j + 1;
+end
+
+for i = (frame_disappear+1):n_images
+    im = imread(image_file,i);
+    RGB = repmat(im,[1,1,3]);
+    RGB = double(RGB)/16384;
+    ofile_name = fullfile(pathstr,(strcat('Trajectory_',num2str(traj_ind),...
+            '_',num2str(i),'.tiff')));
+    imwrite(RGB,ofile_name);
 end
