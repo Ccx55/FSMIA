@@ -53,8 +53,7 @@ end
     N2 = length(Molecule) - NumMoleculeLastFrame;
     k = 1;
     for i = 1:N2
-        % Judge if the molecule is the start of trajectory
-        if ~isempty(Molecule(i).To) && isempty(Molecule(i).From)
+        if ~isempty(Molecule(i).To)
             temp = zeros(1,N_frame);
             temp(1) = i;
             current = i;
@@ -64,7 +63,7 @@ end
                 current = Molecule(current).To;
                 j = j+1;
             end
-            path = nonzeros(temp);
+            path = temp(temp);
             traj(k).trajectory = path;
             k = k+1;
         end
