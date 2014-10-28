@@ -22,7 +22,7 @@ for i = 1:imSize
             molIndex = trajAll(k).trajectory(1);
             coordinates = Molecule(molIndex).coordinate(3:4);
             if coordinates(1)==i && coordinates(2)==j
-                trajStat(ind).traj{shortTrajInd} = num2str(trajAll(k).trajectory,formatSpec);
+                trajStat(ind).traj{shortTrajInd} = num2str((trajAll(k).trajectory)',formatSpec);
                 shortTrajInd = shortTrajInd+1;
             end
         end
@@ -60,7 +60,7 @@ for i = 1:(imSize^2)
     
     for j = (i+1):(imSize^2)
         if trajStat(j).n ~=0 && isneighbor(trajStat(i),trajStat(j))
-           fprintf('%d\n',j);
+           % fprintf('%d\n',j);
            for k = 1:trajStat(j).n
                molInd{length(molInd)+1} = str2num(trajStat(j).traj{k});
            end
@@ -83,7 +83,7 @@ for i = 1:(imSize^2)
     end
     newTraj(ind_newtraj).trajectory = traj_complete;
     ind_newtraj = ind_newtraj + 1;
-    fprintf('%d\n',ind_newtraj);
+    % fprintf('%d\n',ind_newtraj);
 end
 
 
