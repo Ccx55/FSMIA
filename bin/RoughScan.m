@@ -13,8 +13,8 @@ biImage = zeros(m,n);
 for i = (R+1):(m-R)
     for j = (R+1):(n-R)
         if filteredImage(i,j) > threshold
-            subImage = filteredImage(i-2:i+2,j-2:j+2);
-            subImage(3,3) = 0;
+            subImage = filteredImage(i-R:i+R,j-R:j+R);
+            subImage(R+1,R+1) = 0;
             neighborMax = max(max(subImage));
             % If there are two adjacent maximum, only choose one
             if filteredImage(i,j) >= neighborMax && sum(sum(biImage(i-1:i+1,j-1:j+1))) < 0.5
